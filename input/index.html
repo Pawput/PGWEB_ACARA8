@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Data Penduduk</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 620px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            color: #123b63;
+            font-size: 25px;
+        }
+
+        .description {
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px #dbeafe;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        button,
+        .back {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 7px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button {
+            background: #167d62;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #11634e;
+        }
+
+        .back {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        #informasi {
+            margin-top: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error {
+            color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Input Data Penduduk</h1>
+
+        <p class="description">
+            Masukkan identitas kecamatan, koordinat geografis,
+            luas wilayah, dan jumlah penduduk.
+        </p>
+
+        <form action="input.php" method="post" onsubmit="return validateForm()">
+
+            <label for="kecamatan">Kecamatan</label>
+            <input type="text" id="kecamatan" name="kecamatan" maxlength="100" required>
+
+            <label for="longitude">Longitude</label>
+            <input type="number" id="longitude" name="longitude" step="any" min="-180" max="180" required>
+
+            <label for="latitude">Latitude</label>
+            <input type="number" id="latitude" name="latitude" step="any" min="-90" max="90" required>
+
+            <label for="luas">Luas (km²)</label>
+            <input type="number" id="luas" name="luas" step="0.01" min="0.01" required>
+
+            <label for="jumlah_penduduk">Jumlah Penduduk</label>
+            <input type="number" id="jumlah_penduduk" name="jumlah_penduduk" step="1" min="0" required>
+
+            <p id="informasi" role="alert"></p>
+
+            <div class="actions">
+                <a class="back" href="../index.php">Kembali</a>
+                <button type="submit">Simpan Data</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            const kecamatan =
+                document.getElementById("kecamatan").value.trim();
+
+            const longitude =
+                document.getElementById("longitude").value;
+
+            const latitude =
+                document.getElementById("latitude").value;
+
+            const luas =
+                document.getElementById("luas").value;
+
+            const jumlah =
+                document.getElementById("jumlah_penduduk").value;
+
+            const informasi = document.getElementById("informasi");
+
+            informasi.textContent = "";
+            informasi.className = "";
+
+            let pesan = "";
+
+            if (kecamatan === "") {
+                pesan = "Nama kecamatan wajib diisi.";
+            } else if (
+                longitude === "" ||
+                !Number.isFinite(Number(longitude)) ||
+                Number(longitude) < -180 ||
+                Number(longitude) > 180
+            ) {
+                pesan = "Longitude harus berada antara -180 dan 180.";
+            } else if (
+                latitude === "" ||
+                !Number.isFinite(Number(latitude)) ||
+                Number(latitude) < -90 ||
+                Number(latitude) > 90
+            ) {
+                pesan = "Latitude harus berada antara -90 dan 90.";
+            } else if (
+                luas === "" ||
+                !Number.isFinite(Number(luas)) ||
+                Number(luas) <= 0
+            ) {
+                pesan = "Luas wilayah harus berupa angka lebih dari 0.";
+            } else if (
+                jumlah === "" ||
+                !Number.isInteger(Number(jumlah)) ||
+                Number(jumlah) < 0
+            ) {
+                pesan = "Jumlah penduduk harus berupa bilangan bulat nonnegatif.";
+            }
+
+            if (pesan !== "") {
+                informasi.textContent = pesan;
+                informasi.className = "error";
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
+</body>
+
+</html>
